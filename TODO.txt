@@ -1,1 +1,2 @@
 Add in kibana plugins (see https://hub.docker.com/_/kibana/)
+Change sthipchattest to only run from PG or from wherever the collector runs from. Actually, let it run everywhere. Others may depend on it running from any given location.

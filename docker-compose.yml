@@ -1,36 +1,54 @@
-kibana_web:
-  image: kibana
-  container_name: kibana
-  working_dir: /
-  environment:
-   PORT: 5601
-   # Optional, unused here.
-   # ELASTICSEARCH_URL=http://localhost:9200
-  ports:
-   - '5601:5601'
-  links:
-   - es_web
-  # volumes:
-  #  - ./kibana:/
-es_web:
-  image: elasticsearch
-  container_name: elasticsearch
-  working_dir: /
-  environment:
-   PORT: 9200
-  ports:
-   - '9200:9200'
-   - '9300:9300'
-  volumes:
-   - ./esdata:/usr/share/elasticsearch/data
-shell:
-  image: elasticsearch
-  command: bash
-  working_dir: /
-  environment:
-   PORT: 9200
-  ports:
-   - '9200:9200'
-   - '9300:9300'
-  volumes:
-   - ./esdata:/usr/share/elasticsearch/data
+version: '2'
+services:
+    kibana_web:
+        image: kibana
+        container_name: kibana
+        working_dir: /
+        environment:
+            PORT: 5601
+            # Optional, unused here.
+            # ELASTICSEARCH_URL=http://elasticsearch:9200
+        ports:
+            - '5601:5601'
+        links:
+            - es_web
+        # volumes:
+        #     - ./kibana:/
+    es_web:
+        image: elasticsearch
+        container_name: elasticsearch
+        working_dir: /
+        environment:
+            PORT: 9200
+        ports:
+            - '9200:9200'
+            - '9300:9300'
+        volumes:
+            - ./esdata:/usr/share/elasticsearch/data
+            # Run the following in the container to get plugins from github:
+            ## plugin install bscottm/elastic-lda
+    es_web_fill:
+        image: alpine:latest
+        container_name: es_web_fill
+        command: sh -c "apk update; apk add curl; sh movies.sh; sh shakespeare.sh"
+        working_dir: /data
+        environment:
+            - es_protocol=http
+            - es_host=elasticsearch
+            - es_port=9200
+        volumes:
+            - ./default-data/:/data
+        links:
+            - es_web
+    shell:
+        image: elasticsearch
+        container_name: elasticsearch_shell
+        command: bash
+        working_dir: /
+        environment:
+            PORT: 9200
+        ports:
+            - '9200:9200'
+            - '9300:9300'
+        volumes:
+            - ./esdata:/usr/share/elasticsearch/data

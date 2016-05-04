@@ -1,3 +1,3 @@
 #/bin/bash
 
-curl -XPUT localhost:9200/_bulk --data-binary @shakespeare.json
+curl -XPUT ${es_host}:${es_port}/_bulk --data-binary @shakespeare.json

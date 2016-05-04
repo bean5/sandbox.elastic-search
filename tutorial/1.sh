@@ -1,6 +1,6 @@
 #/bin/bash
 
-curl -XPUT http://localhost:9200/shakespeare -d '
+curl -XPUT ${es_protocol}://${es_host}:${es_port}/shakespeare -d '
 {
  "mappings" : {
   "_default_" : {
