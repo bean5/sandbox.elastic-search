@@ -1,0 +1,36 @@
+kibana_web:
+  image: kibana
+  container_name: kibana
+  working_dir: /
+  environment:
+   PORT: 5601
+   # Optional, unused here.
+   # ELASTICSEARCH_URL=http://localhost:9200
+  ports:
+   - '5601:5601'
+  links:
+   - es_web
+  # volumes:
+  #  - ./kibana:/
+es_web:
+  image: elasticsearch
+  container_name: elasticsearch
+  working_dir: /
+  environment:
+   PORT: 9200
+  ports:
+   - '9200:9200'
+   - '9300:9300'
+  volumes:
+   - ./esdata:/usr/share/elasticsearch/data
+shell:
+  image: elasticsearch
+  command: bash
+  working_dir: /
+  environment:
+   PORT: 9200
+  ports:
+   - '9200:9200'
+   - '9300:9300'
+  volumes:
+   - ./esdata:/usr/share/elasticsearch/data
